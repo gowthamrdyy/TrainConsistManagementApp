@@ -1,73 +1,44 @@
+import java.util.Arrays;
+
 public class TrainConsistManagementApp {
 
-    // Bubble Sort Algorithm implementation to sort without library methods
-    public static void bubbleSort(int[] capacities) {
-        int n = capacities.length;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - 1 - i; j++) {
-                if (capacities[j] > capacities[j + 1]) {
-                    // Swap values when left element is greater than right element
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
-    }
-
-    public static void printArray(int[] array) {
-        System.out.print("{");
-        for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i]);
-            if (i < array.length - 1) {
-                System.out.print(", ");
-            }
-        }
-        System.out.println("}");
+    // Method to sort an array of bogie names alphabetically using Java's built-in Arrays.sort()
+    public static void sortBogieNames(String[] bogieNames) {
+        Arrays.sort(bogieNames);
     }
 
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
-        System.out.println("--- UC16: Sort Passenger Bogies by Capacity (Bubble Sort) ---\n");
+        System.out.println("--- UC17: Sort Bogie Names Using Arrays.sort() ---\n");
 
-        System.out.println("[testSort_BasicSorting]");
-        int[] capacities1 = {72, 56, 24, 70, 60};
-        System.out.print("Original: ");
-        printArray(capacities1);
-        bubbleSort(capacities1);
-        System.out.print("Sorted:   ");
-        printArray(capacities1);
+        System.out.println("[testSort_BasicAlphabeticalSorting]");
+        String[] bogies1 = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        System.out.println("Original: " + Arrays.toString(bogies1));
+        sortBogieNames(bogies1);
+        System.out.println("Sorted:   " + Arrays.toString(bogies1));
+
+        System.out.println("\n[testSort_UnsortedInput]");
+        String[] bogies2 = {"Luxury", "General", "Sleeper", "AC Chair"};
+        System.out.println("Original: " + Arrays.toString(bogies2));
+        sortBogieNames(bogies2);
+        System.out.println("Sorted:   " + Arrays.toString(bogies2));
 
         System.out.println("\n[testSort_AlreadySortedArray]");
-        int[] capacities2 = {24, 56, 60, 70, 72};
-        System.out.print("Original: ");
-        printArray(capacities2);
-        bubbleSort(capacities2);
-        System.out.print("Sorted:   ");
-        printArray(capacities2);
+        String[] bogies3 = {"AC Chair", "First Class", "General"};
+        System.out.println("Original: " + Arrays.toString(bogies3));
+        sortBogieNames(bogies3);
+        System.out.println("Sorted:   " + Arrays.toString(bogies3));
 
-        System.out.println("\n[testSort_DuplicateValues]");
-        int[] capacities3 = {72, 56, 56, 24};
-        System.out.print("Original: ");
-        printArray(capacities3);
-        bubbleSort(capacities3);
-        System.out.print("Sorted:   ");
-        printArray(capacities3);
+        System.out.println("\n[testSort_DuplicateBogieNames]");
+        String[] bogies4 = {"Sleeper", "AC Chair", "Sleeper", "General"};
+        System.out.println("Original: " + Arrays.toString(bogies4));
+        sortBogieNames(bogies4);
+        System.out.println("Sorted:   " + Arrays.toString(bogies4));
 
         System.out.println("\n[testSort_SingleElementArray]");
-        int[] capacities4 = {50};
-        System.out.print("Original: ");
-        printArray(capacities4);
-        bubbleSort(capacities4);
-        System.out.print("Sorted:   ");
-        printArray(capacities4);
-
-        System.out.println("\n[testSort_AllEqualValues]");
-        int[] capacities5 = {40, 40, 40};
-        System.out.print("Original: ");
-        printArray(capacities5);
-        bubbleSort(capacities5);
-        System.out.print("Sorted:   ");
-        printArray(capacities5);
+        String[] bogies5 = {"Sleeper"};
+        System.out.println("Original: " + Arrays.toString(bogies5));
+        sortBogieNames(bogies5);
+        System.out.println("Sorted:   " + Arrays.toString(bogies5));
     }
 }

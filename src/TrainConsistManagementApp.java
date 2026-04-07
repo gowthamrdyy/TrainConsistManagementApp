@@ -1,68 +1,66 @@
 public class TrainConsistManagementApp {
 
-    // Custom Exception representing business validation failure
-    static class InvalidCapacityException extends Exception {
-        public InvalidCapacityException(String message) {
+    // Custom Runtime Exception for Cargo Safety
+    static class CargoSafetyException extends RuntimeException {
+        public CargoSafetyException(String message) {
             super(message);
         }
     }
 
-    // Bogie class with Fail-Fast Configuration
-    static class Bogie {
-        private String name;
-        private int capacity;
+    // Goods Bogie class
+    static class GoodsBogie {
+        private String shape;
+        private String assignedCargo;
 
-        public Bogie(String name, int capacity) throws InvalidCapacityException {
-            // Enforcement of Railway Rules directly in constructor
-            if (capacity <= 0) {
-                throw new InvalidCapacityException("Capacity must be greater than zero");
+        public GoodsBogie(String shape) {
+            this.shape = shape;
+            this.assignedCargo = "None";
+        }
+
+        public String getShape() {
+            return shape;
+        }
+
+        public String getAssignedCargo() {
+            return assignedCargo;
+        }
+
+        public void assignCargo(String cargo) {
+            System.out.println("Attempting to assign " + cargo + " to a " + shape + " bogie.");
+            try {
+                if ("Rectangular".equalsIgnoreCase(shape) && "Petroleum".equalsIgnoreCase(cargo)) {
+                    throw new CargoSafetyException("Unsafe assignment: Petroleum cannot be assigned to a Rectangular bogie.");
+                }
+                this.assignedCargo = cargo;
+                System.out.println("Success! Cargo assigned: " + this.assignedCargo);
+            } catch (CargoSafetyException e) {
+                System.out.println("Error Caught: " + e.getMessage());
+            } finally {
+                System.out.println("Validation completion message: Cargo assignment process finished.");
             }
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getCapacity() {
-            return capacity;
-        }
-
-        @Override
-        public String toString() {
-            return "Bogie [name=" + name + ", capacity=" + capacity + "]";
         }
     }
 
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
-        System.out.println("--- UC14: Handling Invalid Bogie Capacity ---\n");
+        System.out.println("--- UC15: Safe Cargo Assignment Using try-catch-finally ---\n");
 
-        System.out.println("[Test 1: Valid Capacity Execution]");
-        try {
-            Bogie validBogie = new Bogie("Sleeper", 72);
-            System.out.println("Success! Created -> " + validBogie);
-        } catch (InvalidCapacityException e) {
-            System.out.println("FAILED: Validation Caught Exception: " + e.getMessage());
-        }
+        System.out.println("[Test: Safe Cargo Assignment Behavior]");
+        GoodsBogie cylindricalBogie = new GoodsBogie("Cylindrical");
+        cylindricalBogie.assignCargo("Petroleum");
+        
+        System.out.println("\n[Test: Unsafe Cargo Detection & Exception Handling]");
+        GoodsBogie rectangularBogie = new GoodsBogie("Rectangular");
+        rectangularBogie.assignCargo("Petroleum");
+        
+        System.out.println("\n[Test: Cargo Not Assigned After Failure]");
+        System.out.println("Current cargo in Rectangular bogie: " + rectangularBogie.getAssignedCargo());
 
-        System.out.println("\n[Test 2: Negative Capacity Evaluation]");
-        try {
-            System.out.println("Attempting to create AC Chair with -10 seating...");
-            new Bogie("AC Chair", -10);
-            System.out.println("FAIL: System incorrectly allowed creation!");
-        } catch (InvalidCapacityException e) {
-            System.out.println("Success! Validation actively Caught Exception -> " + e.getMessage());
-        }
+        System.out.println("\n[Test: Program Continuation After Exception & Finally Block Execution]");
+        System.out.println("Application is still running smoothly. Assigning safe cargo...");
+        rectangularBogie.assignCargo("Coal");
+        System.out.println("Current cargo in Rectangular bogie: " + rectangularBogie.getAssignedCargo());
 
-        System.out.println("\n[Test 3: Zero Capacity Evaluation]");
-        try {
-            System.out.println("Attempting to create First Class with 0 seating...");
-            new Bogie("First Class", 0);
-            System.out.println("FAIL: System incorrectly allowed creation!");
-        } catch (InvalidCapacityException e) {
-            System.out.println("Success! Validation actively Caught Exception -> " + e.getMessage());
-        }
+        System.out.println("\nAll required tests executed successfully.");
     }
 }

@@ -1,68 +1,64 @@
+import java.util.Arrays;
+
 public class TrainConsistManagementApp {
 
-    // Custom Exception representing business validation failure
-    static class InvalidCapacityException extends Exception {
-        public InvalidCapacityException(String message) {
-            super(message);
+    // Binary Search Implementation to find a bogie ID
+    public static boolean binarySearch(String[] bogieIds, String targetId) {
+        // Precondition requirement: Ensure data is sorted before applying binary search
+        Arrays.sort(bogieIds);
+        
+        int low = 0;
+        int high = bogieIds.length - 1;
+        
+        while (low <= high) {
+            // Compute mid index correctly
+            int mid = low + (high - low) / 2;
+            
+            // Compare key with mid element using compareTo()
+            int comparison = bogieIds[mid].compareTo(targetId);
+            
+            if (comparison == 0) {
+                return true; // Match found
+            } else if (comparison < 0) {
+                low = mid + 1; // Target is in the right half
+            } else {
+                high = mid - 1; // Target is in the left half
+            }
         }
+        
+        return false; // Search complete, not found
     }
 
-    // Bogie class with Fail-Fast Configuration
-    static class Bogie {
-        private String name;
-        private int capacity;
-
-        public Bogie(String name, int capacity) throws InvalidCapacityException {
-            // Enforcement of Railway Rules directly in constructor
-            if (capacity <= 0) {
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getCapacity() {
-            return capacity;
-        }
-
-        @Override
-        public String toString() {
-            return "Bogie [name=" + name + ", capacity=" + capacity + "]";
-        }
+    // Helper method for clean test output
+    public static void testSearch(String testName, String[] bogieIds, String targetId) {
+        System.out.println("[" + testName + "]");
+        System.out.println("Searching for: " + targetId);
+        System.out.println("Search Pool: " + Arrays.toString(bogieIds));
+        
+        // Clone array safely to pass to binarySearch
+        String[] searchPool = bogieIds.clone();
+        boolean result = binarySearch(searchPool, targetId);
+        System.out.println("Result: " + result + "\n");
     }
 
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
-        System.out.println("--- UC14: Handling Invalid Bogie Capacity ---\n");
+        System.out.println("--- UC19: Binary Search for Bogie ID (Optimized Searching) ---\n");
 
-        System.out.println("[Test 1: Valid Capacity Execution]");
-        try {
-            Bogie validBogie = new Bogie("Sleeper", 72);
-            System.out.println("Success! Created -> " + validBogie);
-        } catch (InvalidCapacityException e) {
-            System.out.println("FAILED: Validation Caught Exception: " + e.getMessage());
-        }
+        String[] standardBogies = {"BG101", "BG205", "BG309", "BG412", "BG550"};
 
-        System.out.println("\n[Test 2: Negative Capacity Evaluation]");
-        try {
-            System.out.println("Attempting to create AC Chair with -10 seating...");
-            new Bogie("AC Chair", -10);
-            System.out.println("FAIL: System incorrectly allowed creation!");
-        } catch (InvalidCapacityException e) {
-            System.out.println("Success! Validation actively Caught Exception -> " + e.getMessage());
-        }
-
-        System.out.println("\n[Test 3: Zero Capacity Evaluation]");
-        try {
-            System.out.println("Attempting to create First Class with 0 seating...");
-            new Bogie("First Class", 0);
-            System.out.println("FAIL: System incorrectly allowed creation!");
-        } catch (InvalidCapacityException e) {
-            System.out.println("Success! Validation actively Caught Exception -> " + e.getMessage());
-        }
+        testSearch("testBinarySearch_BogieFound", standardBogies, "BG309");
+        testSearch("testBinarySearch_BogieNotFound", standardBogies, "BG999");
+        testSearch("testBinarySearch_FirstElementMatch", standardBogies, "BG101");
+        testSearch("testBinarySearch_LastElementMatch", standardBogies, "BG550");
+        
+        String[] singleBogie = {"BG101"};
+        testSearch("testBinarySearch_SingleElementArray", singleBogie, "BG101");
+        
+        String[] emptyBogie = {};
+        testSearch("testBinarySearch_EmptyArray", emptyBogie, "BG101");
+        
+        String[] unsortedBogies = {"BG309", "BG101", "BG550", "BG205", "BG412"};
+        testSearch("testBinarySearch_UnsortedInputHandled", unsortedBogies, "BG205");
     }
 }
